@@ -899,6 +899,16 @@ class SAVEFILE{
 	static isValid(parsedObj){
 		return parsedObj && typeof parsedObj.meta === "object" && typeof parsedObj.data === "object";
 	}
+
+	static getDate(date){
+		if (date instanceof Date) {
+			return date;
+		}
+		else {
+			// noinspection JSUnresolvedReference
+			return date.toDate();
+		}
+	};
 	
 	findOrRegisterUser(userId, userName, userDiscriminator, userAvatar){
 		var wasPresent = userId in this.meta.users;
@@ -989,7 +999,7 @@ class SAVEFILE{
 		
 		var obj = {
 			u: this.findOrRegisterUser(author.id, author.username, author.bot ? null : author.discriminator, author.avatar),
-			t: discordMessage.timestamp.toDate().getTime()
+			t: SAVEFILE.getDate(discordMessage.timestamp).getTime()
 		};
 		
 		if (discordMessage.content.length > 0){
@@ -997,7 +1007,7 @@ class SAVEFILE{
 		}
 		
 		if (discordMessage.editedTimestamp !== null){
-			obj.te = discordMessage.editedTimestamp.toDate().getTime();
+			obj.te = SAVEFILE.getDate(discordMessage.editedTimestamp).getTime();
 		}
 		
 		if (discordMessage.embeds.length > 0){
